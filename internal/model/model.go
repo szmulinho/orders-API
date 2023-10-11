@@ -5,8 +5,11 @@ import (
 )
 
 type Order struct {
-	OrderID int64  `json:"order-id" gorm:"primaryKey;autoIncrement"`
-	Drugs   string `json:"drugs"`
+	ID      int64  `json:"order-id" gorm:"primaryKey;autoIncrement"`
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Address string `json:"address"`
+	Items   string `json:"items"`
 	Price   string `json:"price"`
 }
 

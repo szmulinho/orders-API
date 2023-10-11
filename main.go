@@ -1,12 +1,25 @@
 package main
 
 import (
-	"github.com/szmulinho/orders/cmd/server"
-	"github.com/szmulinho/orders/internal/database"
+	"fmt"
+	"github.com/szmulinho/common/database"
+	"github.com/szmulinho/common/utils"
+	"github.com/szmulinho/orders/internal/server"
+	"log"
 )
 
 func main() {
-	database.Connect()
+	fmt.Println("Staring the application...")
+	defer fmt.Println("Closing the application...")
 
-	server.Run()
+	db, err := database.Connect()
+	if err != nil {
+		log.Fatalf("connecting to database: %v", err)
+	}
+
+	ctx, _, wait := utils.Gracefully()
+
+	server.Run(ctx, db)
+
+	wait()
 }

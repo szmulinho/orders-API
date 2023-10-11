@@ -1,4 +1,4 @@
-package jwt
+package endpoints
 
 import (
 	"github.com/golang-jwt/jwt"
@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func CreateToken(w http.ResponseWriter, r *http.Request, userID int64, isCustomer bool) (string, error) {
+func (h *handlers) CreateToken(w http.ResponseWriter, r *http.Request, userID int64, isCustomer bool) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userID":     userID,
 		"isCustomer": isCustomer,

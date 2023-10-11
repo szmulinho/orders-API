@@ -1,28 +1,27 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/szmulinho/orders/internal/api/endpoints/orders/add"
-	"github.com/szmulinho/orders/internal/api/endpoints/orders/delete"
-	"github.com/szmulinho/orders/internal/api/endpoints/orders/get"
-	"github.com/szmulinho/orders/internal/api/jwt"
+	"github.com/szmulinho/orders/internal/server/endpoints"
+	"gorm.io/gorm"
 	"log"
 	"net/http"
 )
 
-func Run() {
-
+func Run(ctx context.Context, db *gorm.DB) {
+	handler := endpoints.NewHandler(db)
 	router := mux.NewRouter().StrictSlash(true)
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	router.HandleFunc("/order", add.AddOrder).Methods("POST")
-	router.HandleFunc("/orders", get.GetAllOrders).Methods("GET")
-	router.HandleFunc("/delete_order/{id}", delete.DeleteOrder).Methods("DELETE")
+	router.HandleFunc("/order", handler.AddOrder).Methods("POST")
+	router.HandleFunc("/orders", handler.GetAllOrders).Methods("GET")
+	router.HandleFunc("/delete_order/{id}", handler.DeleteOrder).Methods("DELETE")
 	router.HandleFunc("/authenticate", func(w http.ResponseWriter, r *http.Request) {
 		userID := uint(1)
 		isDoctor := true
-		token, err := jwt.CreateToken(w, r, int64(userID), isDoctor)
+		token, err := handler.CreateToken(w, r, int64(userID), isDoctor)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -37,11 +36,11 @@ func Run() {
 		handlers.AllowCredentials(),
 		handlers.MaxAge(86400),
 	)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", "8084"), cors(router)))
-
-}
-
-func Server() {
-	log.Println("server with port 8081 is starting")
-	Run()
+	go func() {
+		err := http.ListenAndServe(fmt.Sprintf(":%s", "8084"), cors(router))
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+	<-ctx.Done()
 }
