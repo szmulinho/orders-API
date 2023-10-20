@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/szmulinho/orders/internal/server/endpoints"
@@ -37,7 +36,7 @@ func Run(ctx context.Context, db *gorm.DB) {
 		handlers.MaxAge(86400),
 	)
 	go func() {
-		err := http.ListenAndServe(fmt.Sprintf(":%s", "https://szmul-med-orders.onrender.com/"), cors(router))
+		err := http.ListenAndServe(":8084", cors(router))
 		if err != nil {
 			log.Fatal(err)
 		}
