@@ -7,6 +7,7 @@ import (
 	"github.com/szmulinho/orders/internal/model"
 	"log"
 	"net/http"
+	"net/smtp"
 )
 
 type errResponse struct {
@@ -51,4 +52,31 @@ func (h *handlers) AddOrder(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 
 	json.NewEncoder(w).Encode(model.NewOrder)
+
+	emailSubject := "Potwierdzenie zamówienia"
+	emailBody := fmt.Sprintf("Dziękujemy za złożenie zamówienia. Numer zamówienia: %s", newOrder.ID)
+	err = sendEmail(newOrder.Email, emailSubject, emailBody)
+	if err != nil {
+		log.Printf("Failed to send email: %v", err)
+		// Handle the email sending error, maybe return an error response to the client
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(newOrder)
+}
+
+func sendEmail(to, subject, body string) error {
+	from := "samuel.przybyla@gmail.com"
+	password := "L96a1prosniper"
+
+	msg := "From: " + from + "\n" +
+		"To: " + to + "\n" +
+		"Subject: " + subject + "\n\n" +
+		body
+
+	err := smtp.SendMail("smtp.example.com:587", smtp.PlainAuth("", from, password, "smtp.example.com"), from, []string{to}, []byte(msg))
+	if err != nil {
+		return err
+	}
+	return nil
 }
