@@ -16,6 +16,7 @@ func Run(ctx context.Context, db *gorm.DB) {
 	router.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	router.HandleFunc("/order", handler.AddOrder).Methods("POST")
 	router.HandleFunc("/orders", handler.GetAllOrders).Methods("GET")
+	router.HandleFunc("/orders", handler.GetOrderByName).Methods("GET")
 	router.HandleFunc("/delete_order/{id}", handler.DeleteOrder).Methods("DELETE")
 	router.HandleFunc("/authenticate", func(w http.ResponseWriter, r *http.Request) {
 		userID := uint(1)

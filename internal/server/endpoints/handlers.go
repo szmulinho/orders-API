@@ -11,6 +11,7 @@ type Handlers interface {
 	DeleteOrder(w http.ResponseWriter, r *http.Request)
 	GetAllOrders(w http.ResponseWriter, r *http.Request)
 	ValidateMiddleware(next http.HandlerFunc) http.HandlerFunc
+	GetOrderByName(w http.ResponseWriter, r *http.Request)
 }
 
 type handlers struct {
