@@ -53,8 +53,8 @@ func (h *handlers) AddOrder(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(model.NewOrder)
 
-	emailSubject := "Potwierdzenie zamówienia"
-	emailBody := fmt.Sprintf("Dziękujemy za złożenie zamówienia. Numer zamówienia: %s", newOrder.ID)
+	emailSubject := "Order confirmation"
+	emailBody := fmt.Sprintf("Thank you for your purchase. Your order ID: %s", newOrder.ID)
 	err = sendEmail(newOrder.Email, emailSubject, emailBody)
 	if err != nil {
 		log.Printf("Failed to send email: %v", err)
@@ -66,7 +66,7 @@ func (h *handlers) AddOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendEmail(to, subject, body string) error {
-	from := "samuel.przybyla@gmail.com"
+	from := "szmul-med@outlook.com"
 	password := "L96a1prosniper"
 
 	msg := "From: " + from + "\n" +
