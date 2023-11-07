@@ -74,7 +74,7 @@ func sendEmail(to, subject, body string) error {
 		"Subject: " + subject + "\n\n" +
 		body
 
-	err := smtp.SendMail("smtp.example.com:587", smtp.PlainAuth("", from, password, "smtp.example.com"), from, []string{to}, []byte(msg))
+	err := smtp.SendMail("smtp.example.com:587", smtp.PlainAuth("", from, password, "smtp.office365.com"), from, []string{to}, []byte(msg))
 	if err != nil {
 		return err
 	}
