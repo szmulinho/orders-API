@@ -1,8 +1,8 @@
 package database
 
 import (
-	"github.com/szmulinho/common/config"
-	"github.com/szmulinho/common/model"
+	"github.com/szmulinho/orders/internal/config"
+	"github.com/szmulinho/orders/internal/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -16,7 +16,7 @@ func Connect() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(&model.Prescription{}, &model.Drug{}, &model.User{}, &model.Opinion{}, &model.Order{}, &model.Doctor{}); err != nil {
+	if err := db.AutoMigrate(&model.Order{}); err != nil {
 		return nil, err
 	}
 
