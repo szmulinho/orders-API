@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/smtp"
+	"os"
 )
 
 type errResponse struct {
@@ -66,8 +67,8 @@ func (h *handlers) AddOrder(w http.ResponseWriter, r *http.Request) {
 }
 
 func sendEmail(to, subject, body string) error {
-	from := "szmul-med@outlook.com"
-	password := "L96a1prosniper"
+	from := os.Getenv("EMAIL")
+	password := os.Getenv("EMAIL_PASSWORD")
 
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
